@@ -1,0 +1,33 @@
+# Invy Backend - Production .gitignore
+
+# Dependencies
+node_modules/
+package-lock.json
+aws-deployment/
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data directory
+data/
+
+# Credentials (keep credentials.json for Gmail OAuth)
+# credentials.json should be backed up securely
+credentials.json
