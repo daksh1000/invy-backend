@@ -7,6 +7,8 @@ const { requireAuth } = require('../middleware/authMiddleware');
 
 // Invoice routes
 router.get('/invoices', requireAuth, invoiceController.getInvoices);
+router.put('/invoices/:id', requireAuth, invoiceController.updateInvoice);
+router.delete('/invoices/:id', requireAuth, invoiceController.deleteInvoice);
 
 // Connected accounts routes
 router.get('/connected-accounts', requireAuth, accountController.getConnectedAccounts);
