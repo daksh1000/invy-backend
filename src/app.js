@@ -19,5 +19,8 @@ app.use(requestLogger);
 // Routes
 app.use('/auth', authRoutes);
 app.use('/api', apiRoutes);
+app.use('/api/upload', require('./routes/uploadRoutes'));
+app.use('/api/export', require('./routes/exportRoutes'));
+app.use('/api/chat', require('./routes/chatRoutes'));
 
 module.exports = app;
