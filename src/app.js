@@ -22,5 +22,6 @@ app.use('/api', apiRoutes);
 app.use('/api/upload', require('./routes/uploadRoutes'));
 app.use('/api/export', require('./routes/exportRoutes'));
 app.use('/api/chat', require('./routes/chatRoutes'));
+app.use('/api/stories', require('./routes/storyRoutes'));
 
 module.exports = app;
