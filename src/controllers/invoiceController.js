@@ -2,7 +2,7 @@ const { supabase } = require('../config/supabase');
 
 async function getInvoices(req, res) {
     try {
-        const { status, gmail_address } = req.query;
+        const { status, gmail_address, category } = req.query;
         const authId = req.userId;
 
         console.log('📊 GET /api/invoices - Request Details:');
@@ -12,6 +12,7 @@ async function getInvoices(req, res) {
         console.log('   Auth ID from JWT:', authId);
         console.log('   Status filter:', status || 'none');
         console.log('   Gmail filter:', gmail_address || 'none');
+        console.log('   Category filter:', category || 'none');
 
         let query = supabase
             .from('invoices')
@@ -20,6 +21,10 @@ async function getInvoices(req, res) {
 
         if (status) {
             query = query.eq('status', status);
+        }
+
+        if (category) {
+            query = query.eq('category', category);
         }
 
         if (gmail_address) {
@@ -101,6 +106,7 @@ async function updateInvoice(req, res) {
         if (updates.invoice_number !== undefined) allowedUpdates.invoice_number = updates.invoice_number;
         if (updates.total_amount !== undefined) allowedUpdates.total_amount = updates.total_amount;
         if (updates.status !== undefined) allowedUpdates.status = updates.status;
+        if (updates.category !== undefined) allowedUpdates.category = updates.category;
         // due_date and description are not currently supported by the database schema
         // if (updates.due_date !== undefined) allowedUpdates.due_date = updates.due_date;
         // if (updates.description !== undefined) allowedUpdates.description = updates.description;
