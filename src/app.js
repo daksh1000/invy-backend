@@ -9,10 +9,7 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cors({
-    origin: [
-        "https://main.dxtgbmorl6jqy.amplifyapp.com",  // Your Amplify frontend
-        "http://localhost:3000"                      // Local dev
-    ],
+    origin: true,  // allow any origin
     credentials: true
 }));
 
