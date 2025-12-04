@@ -2,7 +2,7 @@ require('dotenv').config();
 const app = require('./src/app');
 const { startMonitoringJobs } = require('./src/jobs/monitoringJobs');
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3000;
 
 // Start background monitoring jobs
 startMonitoringJobs();

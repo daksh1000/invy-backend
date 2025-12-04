@@ -81,8 +81,14 @@ async function processAttachment(messageId, attachment, accessToken, from, subje
         const driveFileId = driveFile?.fileId;
         const driveFileLink = driveFile?.webViewLink;
 
+        const webhookUrl = process.env.WEBHOOK_URL;
+        if (!webhookUrl) {
+            console.error('WEBHOOK_URL is not defined');
+            return;
+        }
+
         const webhookResponse = await axios.post(
-            'https://predemocratic-undenied-jenice.ngrok-free.dev/webhook/invoice',
+            webhookUrl,
             {
                 email_from: from,
                 email_subject: subject,
@@ -115,6 +121,12 @@ async function processAttachment(messageId, attachment, accessToken, from, subje
 
 async function saveInvoiceToDatabase(result, authId, accountEmail) {
     try {
+        // Debug logging
+        console.log('💾 Saving invoice to database:');
+        console.log('   Invoice Number:', result.invoice_number);
+        console.log('   Currency from webhook:', result.currency);
+        console.log('   Full result object:', JSON.stringify(result, null, 2));
+
         const { data: existingInvoice } = await supabase
             .from('invoices')
             .select('id')
@@ -123,31 +135,43 @@ async function saveInvoiceToDatabase(result, authId, accountEmail) {
             .limit(1);
 
         if (existingInvoice && existingInvoice.length > 0) {
+            const updateData = {
+                status: result.status,
+                total_amount: result.total_invoice_amount,
+                link: result.link,
+                category: result.category,
+                currency: result.currency || 'USD',
+                updated_at: new Date().toISOString()
+            };
+
+            console.log('   Updating with currency:', updateData.currency);
+
             await supabase
                 .from('invoices')
-                .update({
-                    status: result.status,
-                    total_amount: result.total_invoice_amount,
-                    link: result.link,
-                    updated_at: new Date().toISOString()
-                })
+                .update(updateData)
                 .eq('id', existingInvoice[0].id);
 
             console.log(`📝 Invoice updated: ${result.invoice_number}`);
         } else {
+            const insertData = {
+                auth_id: authId,
+                gmail_address: accountEmail,
+                invoice_number: result.invoice_number,
+                company_name: result.company_name,
+                status: result.status,
+                total_amount: result.total_invoice_amount,
+                link: result.link,
+                email_from: result.email_from,
+                email_subject: result.email_subject,
+                category: result.category,
+                currency: result.currency || 'USD'
+            };
+
+            console.log('   Inserting with currency:', insertData.currency);
+
             await supabase
                 .from('invoices')
-                .insert([{
-                    auth_id: authId,
-                    gmail_address: accountEmail,  // Use email instead of account ID
-                    invoice_number: result.invoice_number,
-                    company_name: result.company_name,
-                    status: result.status,
-                    total_amount: result.total_invoice_amount,
-                    link: result.link,
-                    email_from: result.email_from,
-                    email_subject: result.email_subject
-                }]);
+                .insert([insertData]);
 
             console.log(`✅ Invoice saved: ${result.invoice_number}`);
         }

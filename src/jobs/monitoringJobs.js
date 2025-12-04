@@ -220,6 +220,8 @@ async function processEmailMessage(message, accessToken, accountEmail, accountId
                                 status: result.status,
                                 total_amount: result.total_invoice_amount,
                                 link: driveLink || result.link,
+                                category: result.category,
+                                currency: result.currency || 'USD',
                                 updated_at: new Date().toISOString()
                             })
                             .eq('id', existingInvoice[0].id);
@@ -238,7 +240,9 @@ async function processEmailMessage(message, accessToken, accountEmail, accountId
                                 total_amount: result.total_invoice_amount,
                                 link: driveLink || result.link,
                                 email_from: result.email_from,
-                                email_subject: result.email_subject
+                                email_subject: result.email_subject,
+                                category: result.category,
+                                currency: result.currency || 'USD'
                             }]);
 
                         console.log(`✅ Invoice saved: ${result.invoice_number}`);

@@ -3,6 +3,7 @@ const router = express.Router();
 const invoiceController = require('../controllers/invoiceController');
 const accountController = require('../controllers/accountController');
 const utilityController = require('../controllers/utilityController');
+const currencyRoutes = require('./currencyRoutes');
 const { requireAuth } = require('../middleware/authMiddleware');
 
 // Invoice routes
@@ -13,6 +14,9 @@ router.delete('/invoices/:id', requireAuth, invoiceController.deleteInvoice);
 // Connected accounts routes
 router.get('/connected-accounts', requireAuth, accountController.getConnectedAccounts);
 router.delete('/connected-accounts/:accountId', requireAuth, accountController.deleteConnectedAccount);
+
+// Currency routes
+router.use('/currency', currencyRoutes);
 
 // Utility routes
 router.post('/update-orphaned-invoices', requireAuth, utilityController.updateOrphanedInvoices);

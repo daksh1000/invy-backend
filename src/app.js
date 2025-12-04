@@ -9,9 +9,17 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: [
+        "https://main.dxtgbmorl6jqy.amplifyapp.com",  // Your Amplify frontend
+        "http://localhost:3000"                      // Local dev
+    ],
     credentials: true
 }));
+
+// ---------- HEALTH CHECK (AWS NEEDS THIS) ----------
+app.get('/', (req, res) => {
+    res.json({ message: "Backend running ✔️", status: "OK" });
+});
 
 // Request logging middleware (logs all incoming requests)
 app.use(requestLogger);
